@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<header>
+			<h1>API GELOCALISATION & MEDIA</h1>
+		</header>
+
+		<main>
+			<section class="section--container">
+				<div class="section--wrapper">
+					<h2>Géolocalisation</h2>
+
+					<div class="geo--buttons">
+						<button id="geoInstantButton">Instannée</button>
+						<button id="geoWatcherButton">
+							Activer la géolocalisation en direct
+						</button>
+					</div>
+
+					<div class="geo--info">
+						<p>Timestamp : <span id="geo-timestamp"></span></p>
+						<p>Accuracy : <span id="geo-accuracy"></span></p>
+						<p>Altitude : <span id="geo-altitude"></span></p>
+						<p>AltitudeAccuracy : <span id="geo-altitudeAccuracy"></span></p>
+						<p>Heading : <span id="geo-heading"></span></p>
+						<p>Latitude : <span id="geo-latitude"></span></p>
+						<p>Longitude : <span id="geo-longitude"></span></p>
+						<p>Speed : <span id="geo-speed"></span></p>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<h2>Média</h2>
+			</section>
+		</main>
+
+		<script type="module" src="src/scripts/geo.js"></script>
+	</body>
+</html>
