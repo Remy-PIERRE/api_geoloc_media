@@ -3,11 +3,16 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>Démo API Géolocalisation & Média</title>
+
+		<link rel="stylesheet" href="src/styles/main.css" />
 	</head>
 	<body>
 		<header>
-			<h1>API GELOCALISATION & MEDIA</h1>
+			<h1>
+				API GELOCALISATION<br />
+				& MEDIA
+			</h1>
 		</header>
 
 		<main>
@@ -17,9 +22,7 @@
 
 					<div class="geo--buttons">
 						<button id="geoInstantButton">Instannée</button>
-						<button id="geoWatcherButton">
-							Activer la géolocalisation en direct
-						</button>
+						<button id="geoWatcherButton">Activer en direct</button>
 					</div>
 
 					<div class="geo--info">
@@ -35,11 +38,33 @@
 				</div>
 			</section>
 
-			<section>
-				<h2>Média</h2>
+			<section class="section--container">
+				<div class="section--wrapper">
+					<h2>Média</h2>
+
+					<div class="media--buttons">
+						<button id="mediaCameraButton">Activer la camera</button>
+						<button id="mediaPhotoButton">Prendre une photo</button>
+					</div>
+
+					<div class="media--camera--container">
+						<video class="media--camera--video" id="mediaVideo">
+							Le flux vidéo n'est pas disponible.
+						</video>
+					</div>
+
+					<div class="media--photo--container">
+						<img
+							id="mediaPhoto"
+							alt="L'image capturée sera affichée dans cette boîte." />
+					</div>
+
+					<canvas id="canvas"></canvas>
+				</div>
 			</section>
 		</main>
 
 		<script type="module" src="src/scripts/geo.js"></script>
+		<script type="module" src="src/scripts/media.js"></script>
 	</body>
 </html>

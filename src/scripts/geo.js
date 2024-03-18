@@ -119,13 +119,11 @@ function removeGeoWatcher() {
 
 // modification de l'affichage du bouton //
 function setButtonOn() {
-	document.querySelector("#geoWatcherButton").innerHTML =
-		"Activer la géolocalisation en direct";
+	document.querySelector("#geoWatcherButton").innerHTML = "Activer en direct";
 }
 
 function setButtonOff() {
-	document.querySelector("#geoWatcherButton").innerHTML =
-		"Désctiver la géolocalisation en direct";
+	document.querySelector("#geoWatcherButton").innerHTML = "Désctiver en direct";
 }
 
 // AFFICHAGE DE LA POSITION //
