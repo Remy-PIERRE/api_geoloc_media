@@ -578,6 +578,8 @@ async function loadFile() {
 
 Et voila ! Notre photo à bien été chargée et s'affiche correctement sur notre application.
 
+On pourrait dans d'autres exemples afficher le texte contenue dans une fichier <code>.txt</code> ou distribuer les données d'un tableur dans une <code>table</code>.
+
 # CONCLUSION
 
 L'utilisation des API geolocation et mediaDevices est assez simple et ouvre de nombreuses possibilités de fonctionnalités.
