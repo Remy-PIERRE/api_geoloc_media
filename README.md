@@ -223,7 +223,7 @@ L'API mediaDevices est une partie de l'API WebRTC (Web Real-Time Communication) 
 
 ## Autorisation
 
-Lorsque vous ferez appel aux méthodes de l'API MediaDevices depuis votre application et selon les réglages mis en place par l'utilisateur, un pop-up apparaitra depuis le navigateur de l'utilisateur pour qu'il vous autorise ou vous refuse à accéder à ces données. Il convient donc de s'assurer que l'application prend bien en compte les cas où l'utilisateur refuse l'accès à la géolocalisation de l'appareil.
+Lorsque vous ferez appel aux méthodes de l'API MediaDevices depuis votre application et selon les réglages mis en place par l'utilisateur, un pop-up apparaitra depuis le navigateur de l'utilisateur pour qu'il vous autorise ou vous refuse à accéder à ces données. Il convient donc de s'assurer que l'application prend bien en compte les cas où l'utilisateur refuse l'accès à la gestion des périphériques de l'appareil.
 
 La mise en forme du message d'autorisation est à la charge du navigateur et dépend de ce dernier.
 
@@ -422,9 +422,163 @@ function handlePhoto() {
 }
 ```
 
-Et voila, l'image est maintenant affichée ! On peut la recréée si elle ne convient pas, l'enregistrer dans le cache ou l'envoyer vers une base de donnée noSQL si le besoin s'en fait ressentir.
+Et voila, l'image est maintenant affichée ! On peut la recréée si elle ne convient pas, l'enregistrer dans le cache,comme fichier sur le poste utilisateur ou l'envoyer vers une base de donnée noSQL si le besoin s'en fait ressentir.
 
-## Conclusion
+# API FILE SYSTEM
+
+## Description
+
+L'API File System du moteur Chrome offre des fonctionnalités permettant aux applications web d'accéder et de manipuler des fichiers et des dossiers sur le système de fichiers local de l'utilisateur, directement depuis le navigateur.
+
+Cette API n'est disponible que depuis les navigateurs utilisant le Chrome Engine. Mozilla Firefox par exemple ne propose pas cette API.
+
+## Autorisation
+
+Lorsque vous ferez appel aux méthodes de l'API File System depuis votre application et selon les réglages mis en place par l'utilisateur, un pop-up apparaitra depuis le navigateur de l'utilisateur pour qu'il vous autorise ou vous refuse à accéder à ces données. Il convient donc de s'assurer que l'application prend bien en compte les cas où l'utilisateur refuse l'accès .
+
+La mise en forme du message d'autorisation est à la charge du navigateur et dépend de ce dernier.
+
+## Enregistrement d'un fichier
+
+Dans cet exemple, nous allons récupérer la photo prise graàce à l'API mediaDevices précédement (cf media.js) et l'enregistrer dans une dossier de notre choix.
+
+<code>index.html</code> _mise en place du bouton_
+
+```html
+<section class="section--container">
+	<div class="section--wrapper">
+		<div class="fileSystem--buttons">
+			<button id="fileSystemCreateButton">Créer un fichier</button>
+		</div>
+	</div>
+</section>
+
+<script type="module" src="src/scripts/fileSystem.js"></script>
+```
+
+<code>src/fileSystem.js</code> _vérification de la prise en charge de la fonctionnalité file system puis mise en place de l'écouteur d'évenement sur le bouton_
+
+```js
+// au chargement de la page, on écoute le click sur les boutons pour activer la fonctionnalité demandée //
+window.addEventListener("load", initFileSystem);
+
+async function initFileSystem() {
+	// on vérifie si le service est disponible depuis le navigateur de l'utilisateur //
+	if ("showOpenFilePicker" in window || "showSaveFilePicker" in window) {
+		console.log("Service file system disponible !");
+	} else {
+		return console.log("Service file system non disponible !");
+	}
+
+	// création du document - bouton //
+	document
+		.querySelector("#fileSystemCreateButton")
+		.addEventListener("click", createFile);
+}
+```
+
+<code>src/fileSystem.js</code> _création du document depuis le canvas, séléction du dossier cible et enregistrement du document_
+
+```js
+function createFile() {
+	// on vérifie que la photo est bien présente dans l'élément image (cf media.js) //
+	if (document.querySelector("#mediaPhoto").src) {
+		const canvas = document.querySelector("#canvas");
+
+		// on extrait l'image du canvas //
+		canvas.toBlob(async (blob) => {
+			// on crée un fichier à partir des données obtenues et de l'interface File([data], name, options) //
+			const file = new File([blob], "myPhoto.png", {
+				type: "image/png",
+			});
+
+			try {
+				// on ouvre le directory picker de l'utilisateur pour qu'il choisisse le dossier qui récéptionnera le fichier créé //
+				const directoryHandle = await window.showDirectoryPicker();
+
+				// on insère le fichier dans le dossier, il sera créé s'il n'existe pas déjà //
+				const newFileHandle = await directoryHandle.getFileHandle(file.name, {
+					create: true,
+				});
+
+				// ouverture de l'instance d'écriture //
+				const writable = await newFileHandle.createWritable();
+				// insertion des données du fichier //
+				await writable.write(file);
+				// fermeture de l'instance d'écriture //
+				await writable.close();
+			} catch (error) {
+				// utilisation de try / catch pour gérer les erreurs ou refus de l'utilisateur //
+				console.log("Erreur lors de la création du fichier : ", error.message);
+			}
+		});
+	}
+}
+```
+
+Le fichier est maintenant créé et enregistré.
+
+L'instance <code>writable</code> permet aussi d'insérer du texte directement gràce à sa méthode <code>.write()</code> si le fichier peut en contenir (.txt par exemple).
+
+## Chargement du fichier
+
+On souhaite maintenant charger le fichier image précédement créé et l'afficher dans notre application.
+
+<code>index.html</code> _ajout du bouton de chargement et de l'élément image pour recevoir notre fichier_
+
+```html
+<section class="section--container">
+	<div class="section--wrapper">
+		<div class="fileSystem--buttons">
+			<button id="fileSystemCreateButton">Créer un fichier</button>
+			<button id="fileSystemLoadButton">Charger un fichier</button>
+		</div>
+
+		<div class="fileSystem--image--container">
+			<img
+				id="fileSystemImage"
+				alt="L'image chargée sera affichée dans cette boîte." />
+		</div>
+	</div>
+</section>
+```
+
+<code>src/fileSystem.js</code> _ajout de l'écouteur d'évenement sur notre nouveau bouton_
+
+```js
+async function initFileSystem() {
+	// ... //
+
+	// chargement du document - bouton //
+	document
+		.querySelector("#fileSystemLoadButton")
+		.addEventListener("click", loadFile);
+}
+```
+
+<code>src/fileSystem.js</code> _chargement du fichier et distribution des donnnées vers le HTML_
+
+```js
+async function loadFile() {
+	try {
+		// ouverture du file picker de l'utilisateur //
+		const [fileHandle] = await window.showOpenFilePicker();
+		// on récupère le fichier choisi //
+		const file = await fileHandle.getFile();
+		// on créé une url à partir du fichier chargé pour pouvoir l'insérer dans l'élément <img /> du HTML //
+		const url = URL.createObjectURL(file);
+		// on insère les données dans l'élément <img /> //
+		document.querySelector("#fileSystemImage").src = url;
+	} catch (error) {
+		// utilisation de try / catch pour gérer les erreurs ou refus de l'utilisateur //
+		console.error("Erreur lors de la sélection du fichier :", error);
+	}
+}
+```
+
+Et voila ! Notre photo à bien été chargée et s'affiche correctement sur notre application.
+
+# CONCLUSION
 
 L'utilisation des API geolocation et mediaDevices est assez simple et ouvre de nombreuses possibilités de fonctionnalités.
 

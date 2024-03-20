@@ -62,9 +62,25 @@
 					<canvas id="canvas"></canvas>
 				</div>
 			</section>
+
+			<section class="section--container">
+				<div class="section--wrapper">
+					<div class="fileSystem--buttons">
+						<button id="fileSystemCreateButton">Créer un fichier</button>
+						<button id="fileSystemLoadButton">Charger un fichier</button>
+					</div>
+
+					<div class="fileSystem--image--container">
+						<img
+							id="fileSystemImage"
+							alt="L'image chargée sera affichée dans cette boîte." />
+					</div>
+				</div>
+			</section>
 		</main>
 
 		<script type="module" src="src/scripts/geo.js"></script>
 		<script type="module" src="src/scripts/media.js"></script>
+		<script type="module" src="src/scripts/fileSystem.js"></script>
 	</body>
 </html>

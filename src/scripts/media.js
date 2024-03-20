@@ -4,6 +4,7 @@
 window.addEventListener("load", initMedia);
 
 function initMedia() {
+	// on vérifie si le service est disponible depuis le navigateur de l'utilisateur //
 	if ("mediaDevices" in navigator && "getUserMedia" in navigator.mediaDevices) {
 		console.log('La fonctionnalité "media" est disponible !');
 	} else {
